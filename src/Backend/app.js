@@ -4,6 +4,8 @@ let bodyParser = require('body-parser');
 let path = require('path');
 
 let app = express();
+app.use('/static_media', express.static('../../Media'))
+app.use('/static', express.static('../Frontend'));
 
 let sqlManager = mysql.createConnection({
     host: "localhost",
@@ -11,7 +13,6 @@ let sqlManager = mysql.createConnection({
     user: "root",
     password: "yourpassword"
 });
-
 
 sqlManager.connect(function (err) {
     if (err) throw err;
