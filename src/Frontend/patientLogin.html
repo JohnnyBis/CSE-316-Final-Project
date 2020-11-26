@@ -13,26 +13,19 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
         integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous">
     </script>
-    <link rel="stylesheet" href="/static/css/patientLoginStyle.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/labLoginStyle.css" type="text/css">
 </head>
 
 <body class="text-center vsc-initialized">
-    <form class="form-signin" action="/login" method="POST">
+    <form class="form-signin" action="/login/patient" method="POST">
         <img class="mb-4" src="/static_media/stony-brook-university-logo-horizontal-300.png" alt="" width="80" height="80">
-        <h1 class="h3 mb-3 font-weight-normal">Patient sign in</h1>
+        <h1 class="h3 mb-3 font-weight-normal">Patient Login - Test Results</h1>
         <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+        <input name="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" value="remember-me"> Remember me
-            </label>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <button class="btn btn-sm btn-primary btn-block" type="submit">Login Collector</button>
-            </div>
+        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required=""/>
+        <br>
+        <div class="row justify-content-center">
             <div class="col-sm-6">
                 <button class="btn btn-sm btn-primary btn-block" type="submit">Lab Login</button>
             </div>

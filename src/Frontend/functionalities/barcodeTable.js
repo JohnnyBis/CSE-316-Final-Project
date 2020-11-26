@@ -2,6 +2,7 @@ const $tableID = $('#table');
 const $BTN = $('#export-btn');
 const $EXPORT = $('#export');
 
+
 const newTr = `
 <tr class="hide">
   <td class="pt-3-half" contenteditable="true"></td>
@@ -13,7 +14,7 @@ const newTr = `
 $('#add-button').on('click', () => {
 
     const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
-
+    
     if ($tableID.find('tbody tr').length === 0) {
         $('tbody').append(newTr);
     }
