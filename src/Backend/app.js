@@ -1,7 +1,9 @@
-let mysql = require('mysql');
-let express = require('express');
-let bodyParser = require('body-parser');
-let path = require('path');
+const mysql = require('mysql');
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
+
+const employeeAPI = require("./employeeAPI.js")
 
 let app = express();
 app.use('/static_media', express.static('../../Media'))
@@ -22,20 +24,20 @@ let sqlManager = mysql.createConnection({
 	database: "covid_testing_schema" //Change this to your local database name
 });
 
-sqlManager.connect(function (err) {
+sqlManager.connect( (err) => {
     if (err) throw err;
     console.log("Connected!");
 });
 
-app.get("/patientLogin", function(req, res) {
+app.get("/patientLogin", (req, res) => {
 	res.sendFile('patientLogin.html', { root: path.join(__dirname, '../Frontend') });
 });
 
-app.get("/labLogin", function(req, res) {
+app.get("/labLogin", (req, res) => {
 	res.sendFile('labLogin.html', { root: path.join(__dirname, '../Frontend') });
 });
 
-app.post("/login/patient", function(req, res) {
+app.post("/login/patient", (req, res) => {
 	const email = req.body.email;
 	const password = req.body.password;
 	if (email && password) {
@@ -54,7 +56,7 @@ app.post("/login/patient", function(req, res) {
 	}
 });
 
-app.post("/login/lab", function(req, res) {
+app.post("/login/lab", (req, res) => {
 	const id = req.body.labID;
 	const password = req.body.password;
 	if (id && password) {
@@ -77,5 +79,8 @@ app.post("/login/lab", function(req, res) {
 		res.end();
 	}
 });
+
+
+app.use(employeeAPI);
 
 app.listen(8080);
