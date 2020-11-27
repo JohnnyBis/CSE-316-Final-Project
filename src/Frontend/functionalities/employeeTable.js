@@ -2,26 +2,39 @@ const $tableID = $('#table');
 const $BTN = $('#export-btn');
 const $EXPORT = $('#export');
 
+function fetchSavedTests() {
+    return fetch("http://localhost:8080/queryDB/all").then(result => {
+        return result.json();
+    }).then(function (data) {
+        return data;
+    });
+}
 
-const newTr = `
-<tr class="hide">
-  <td class="pt-3-half"></td>
-  <td class="pt-3-half"></td>
-  <td>
-    <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
-  </td>
-</tr>`;
-
-
-
-$('#form-submit').on('click', () => {
+async function displaySavedTests() {
     const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
-    
+    let fetchTestList = await fetchSavedTests();
+    console.log(fetchTestList);
     if ($tableID.find('tbody tr').length === 0) {
-        $('tbody').append(newTr);
+        for (let i = 0; i < fetchTestList.length; i++) {
+            const newTr = `
+                <tr class="hide">
+                <td class="pt-3-half">${fetchTestList[i]["employeeID"]}</td>
+                <td class="pt-3-half">${fetchTestList[i]["testBarcode"]}</td>
+                <td>
+                    <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
+                </td>
+                </tr>`;
+            $('tbody').append(newTr);
+        }
     }
 
     $tableID.find('table').append($clone);
+}
+
+displaySavedTests();
+
+$('#form-submit').on('click', async () => {
+    displaySavedTests();
 });
 
 $tableID.on('click', '.table-remove', function () {

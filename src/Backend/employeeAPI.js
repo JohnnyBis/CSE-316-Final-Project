@@ -34,6 +34,14 @@ employeeAPI.post("/addTest", (req, res) => {
     return false;
 });
 
+employeeAPI.get("/queryDB/all", (req, res) => {
+    sqlManager.query('SELECT testBarcode, employeeID FROM EmployeeTest;', function(error, results, fields) {
+        if (error != null) {
+            throw new Error('Database failed to connect!');
+        }
+        console.log(results);
+        res.json(results);
+    });
+});
+
 module.exports = employeeAPI;
-
-
