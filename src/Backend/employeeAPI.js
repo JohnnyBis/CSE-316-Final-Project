@@ -52,4 +52,38 @@ employeeAPI.get("/deleteTest/:barcodeID", (req, res) => {
     });
 });
 
+employeeAPI.post("/addPool", (req, res) => {
+    let poolBarcode = req.body.poolBarcode;
+    let testList = req.body.testList;
+    console.log(poolBarcode);
+    console.log(testList);
+
+    if (poolBarcode && testList) {
+		sqlManager.query('INSERT INTO Pool (poolBarcode) VALUES (?);', [poolBarcode], function(error, results, fields) {
+            if (error) throw error;
+            try {
+                if (didCreatePoolMap(poolBarcode, testList)) res.end();
+            } catch (error) {
+                throw error;
+            }
+		});
+	} else {
+	    res.send('Please enter the employeeID and barcode.');
+		res.end();
+    }
+    return false;
+});
+
+function didCreatePoolMap(poolBarcode, testList) {    
+    let combinedValues = [];
+    for(let i = 0; i < testList.length; i++) {
+        combinedValues.push([testList[i], poolBarcode]);
+    }
+
+    sqlManager.query('INSERT INTO PoolMap (testBarcode, poolBarcode) VALUES ?;', [combinedValues], function(error, results, fields) {
+        if (error) throw error;
+        return true
+    });
+}
+
 module.exports = employeeAPI;

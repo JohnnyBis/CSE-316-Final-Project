@@ -88,14 +88,13 @@
 
                 <!-- Information Input Form -->
                 <div class="col-md-8 order-md-1">
-                    <form class="needs-validation" novalidate="">
+                    <form class="needs-validation" action="/addPool" method="POST">
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="poolBarcode">Pool barcode</label>
-                                <input type="text" class="form-control" id="firstName" placeholder="E.g. 30000" value=""
-                                    required="">
+                                <input type="text" class="form-control" id="poolBarcode" placeholder="E.g. 30000" name="poolBarcode" required>
                                 <div class="invalid-feedback">
-                                    Valid first name is required.
+                                    A poolBarcode is required.
                                 </div>
                             </div>
 
@@ -115,14 +114,6 @@
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    <!-- Clonable table line -->
-                                    <!-- <tr>
-                                      <td class="pt-3-half" contenteditable="true">Aurelia Vega</td>
-                                      <td>
-                                        <span class="table-remove"><button type="button"
-                                            class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
-                                      </td>
-                                    </tr>                                         -->
                                   </tbody>
                                 </table>
                               </div>
@@ -130,7 +121,6 @@
                           </div>
                         <hr class="mb-4">
                         <button class="btn btn-primary btn-lg btn-block" type="submit">Submit Pool</button>
-
                     </form>
                 </div>
 

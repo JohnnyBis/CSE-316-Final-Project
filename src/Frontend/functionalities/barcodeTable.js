@@ -2,19 +2,20 @@ const $tableID = $('#table');
 const $BTN = $('#export-btn');
 const $EXPORT = $('#export');
 
-
 const newTr = `
-<tr class="hide">
-  <td class="pt-3-half" contenteditable="true"></td>
-  <td>
-    <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
-  </td>
-</tr>`;
+        <tr class="hide">
+        <td class="pt-3-half">
+            <input id="testBarcode" name="testList">
+        </td>
+        <td>
+            <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
+        </td>
+        </tr>`;
 
 $('#add-button').on('click', () => {
 
     const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
-    
+
     if ($tableID.find('tbody tr').length === 0) {
         $('tbody').append(newTr);
     }
