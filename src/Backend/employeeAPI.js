@@ -19,12 +19,11 @@ employeeAPI.post("/addTest", (req, res) => {
     let employeeID = req.body.employeeId;
     if (barcode && employeeID) {
 		sqlManager.query('INSERT INTO EmployeeTest (testBarcode, employeeID, collectionTime, collectedBy) VALUES (?, ?, "2020-01-19 03:14:07", "100");', [barcode, employeeID], function(error, results, fields) {
-            if (error == null) {
-                console.log("Successfully saved employee test result.");
-                res.redirect('../static/testCollection.html');
-            }else{
-                console.log("Error: " + error);
+            if (error != null) {
+                throw new Error("Error: " + error);
             }
+            console.log("Successfully saved employee test result.");
+            res.redirect('../static/testCollection.html');
 			res.end();
 		});
 	} else {
@@ -39,8 +38,17 @@ employeeAPI.get("/queryDB/all", (req, res) => {
         if (error != null) {
             throw new Error('Database failed to connect!');
         }
-        console.log(results);
         res.json(results);
+    });
+});
+
+employeeAPI.get("/deleteTest/:barcodeID", (req, res) => {
+    let id = req.params.barcodeID;
+    sqlManager.query(`DELETE FROM EmployeeTest WHERE EmployeeTest.testBarcode = '${id}';`, function(error, results, fields) {
+        if (error) throw error;
+        console.log(results, fields);
+        res.send("Successfully deleted test.");
+        res.end();
     });
 });
 
