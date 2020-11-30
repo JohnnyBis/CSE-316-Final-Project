@@ -86,4 +86,14 @@ function didCreatePoolMap(poolBarcode, testList) {
     });
 }
 
+employeeAPI.get("/queryDB/savedPools", (req, res) => {
+    let sqlQuery = 'SELECT * FROM PoolMap;';
+    sqlManager.query(sqlQuery, function(error, results, fields) {
+        if (error) throw error;
+        console.log(results, fields);
+        res.send("Displayed saved pool map.");
+        res.end();
+    });
+});
+
 module.exports = employeeAPI;
