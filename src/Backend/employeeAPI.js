@@ -44,11 +44,18 @@ employeeAPI.get("/queryDB/all", (req, res) => {
 
 employeeAPI.get("/deleteTest/:barcodeID", (req, res) => {
     let id = req.params.barcodeID;
-    sqlManager.query(`DELETE FROM EmployeeTest WHERE EmployeeTest.testBarcode = '${id}';`, function(error, results, fields) {
-        if (error) throw error;
-        console.log(results, fields);
-        res.send("Successfully deleted test.");
-        res.end();
+    let poolMapQuery = `SELECT * FROM PoolMap WHERE PoolMap.testBarcode = '${id}';`;
+    sqlManager.query(poolMapQuery, (error, results, fields) => {
+        if (results != undefined && results.length > 0) {
+            throw new Error("Can't delete test. Test barcode is already used in pool.");
+        }
+
+        let deleteTestQuery = `DELETE FROM EmployeeTest WHERE EmployeeTest.testBarcode = '${id}';`;
+        sqlManager.query(deleteTestQuery, (error, results, fields) => {
+            if (error) throw error;
+            res.send("Successfully deleted test.");
+            res.send();
+        });
     });
 });
 
@@ -87,11 +94,28 @@ function didCreatePoolMap(poolBarcode, testList) {
 }
 
 employeeAPI.get("/queryDB/savedPools", (req, res) => {
-    let sqlQuery = 'SELECT * FROM PoolMap;';
-    sqlManager.query(sqlQuery, function(error, results, fields) {
+    let barcodeQuery = 'SELECT * FROM PoolMap;';
+    sqlManager.query(barcodeQuery, function(error, results, fields) {
         if (error) throw error;
-        console.log(results, fields);
-        res.send("Displayed saved pool map.");
+        let poolMap = new Map();
+
+        for(let i = 0; i < results.length; i++) {
+            let poolBarcode = results[i]["poolBarcode"];
+            if (poolMap.has(poolBarcode)) {
+                poolMap.get(poolBarcode).push(results[i]["testBarcode"]);
+            }else{
+                poolMap.set(results[i]["poolBarcode"], [results[i]["testBarcode"]]);
+            }
+        }
+        res.json(Object.fromEntries(poolMap));
+    });
+});
+
+employeeAPI.get("/queryDB/deletePool/:id", (req, res) => {
+    let deletePoolQuery = `DELETE FROM PoolMap WHERE poolBarcode = ${id};`;
+    sqlManager.query(deletePoolQuery, function(error, results, fields) {
+        if (error) throw error;
+        // res.send("Succesfully deleted pool.");
         res.end();
     });
 });

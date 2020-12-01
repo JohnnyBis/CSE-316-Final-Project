@@ -17,7 +17,7 @@ async function displaySavedTests() {
     const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
     let fetchTestList = await fetchSavedTests();
     if (fetchTestList == null) return;
-
+    
     if ($tableID.find('tbody tr').length === 0) {
         for (let i = 0; i < fetchTestList.length; i++) {
             const newTr = `
@@ -58,12 +58,13 @@ $('#form-submit').on('click', async () => {
 
 $tableID.on('click', '.table-remove', async function () {
     let testID = $(this).parents('tr').attr('id');
+    console.log(testID);
     deleteSavedTest(this, testID);
 });
 
 $tableID.on('click', '.table-up', function () {
     const $row = $(this).parents('tr');
-    
+
     if ($row.index() === 0) {
         return;
     }

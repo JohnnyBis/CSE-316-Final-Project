@@ -2,6 +2,18 @@ const $tableID = $('#table');
 const $BTN = $('#export-btn');
 const $EXPORT = $('#export');
 
+const newTr = `
+        <tr class="hide">
+        <td class="pt-3-half">
+        </td>
+        <td class="pt-3-half">
+            <input id="testBarcode" name="testList">
+        </td>
+        <td>
+            <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
+        </td>
+        </tr>`;
+
 function fetchSavedPools() {
     return fetch("http://localhost:8080/queryDB/savedPools").then(result => {
         return result.json();
@@ -15,39 +27,44 @@ function fetchSavedPools() {
 
 async function displaySavedTests() {
     const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
-    let savedPoolsList = await fetchSavedPools();
-    if (savedPoolsList == null) return;
+    let savedPools = await fetchSavedPools();
+    console.log(savedPools);
+    console.log(savedPools);
+    if (savedPools == null) return;
 
     if ($tableID.find('tbody tr').length === 0) {
-        for (let i = 0; i < savedPoolsList.length; i++) {
-            const newTr = `
-                <tr class="hide" id="${savedPoolsList[i]["testBarcode"]}">
-                    <td class="pt-3-half">${savedPoolsList[i]["poolBarcode"]}</td>
-                    <td>
-                        <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
-                    </td>
-                </tr>`;
-            $('tbody').append(newTr);
+        for (var key in savedPools) {
+            if (savedPools.hasOwnProperty(key)) {
+                const newTr = `
+                    <tr class="hide" id="${key}">
+                    <td class="pt-3-half">${key}</td>
+                        <td class="pt-3-half">${savedPools[key]}</td>
+                        <td>
+                            <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
+                        </td>
+                    </tr>`;
+                $('tbody').append(newTr);
+            }
         }
     }
     $tableID.find('table').append($clone);
 }
 
-// function deleteTestBy(barcodeID) {
-//     return fetch(`http://localhost:8080/deleteTest/${barcodeID}`).then(result => {
-//         return result;
-//     }).catch((error) => {
-//         console.log(error);
-//         return null;
-//     });
-// }
+function deleteTestBy(barcodeID) {
+    return fetch(`http://localhost:8080/deletePool/${barcodeID}`).then(result => {
+        return result;
+    }).catch((error) => {
+        console.log(error);
+        return null;
+    });
+}
 
-// async function deleteSavedTest(element, barcodeID) {
-//     let result = await deleteTestBy(barcodeID);
-//     console.log(result);
-//     if(result == null) return;
-//     $(element).parents('tr').detach();
-// }
+async function deleteSavedTest(element, poolID) {
+    let result = await deleteTestBy(poolID);
+    console.log(result);
+    if(result == null) return;
+    $(element).parents('tr').detach();
+}
 
 displaySavedTests();
 
@@ -55,10 +72,22 @@ displaySavedTests();
 //     displaySavedTests();
 // });
 
-// $tableID.on('click', '.table-remove', async function () {
-//     let testID = $(this).parents('tr').attr('id');
-//     deleteSavedTest(this, testID);
-// });
+$('#add-button').on('click', () => {
+
+    const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
+
+    if ($tableID.find('tbody tr').length === 0) {
+        $('tbody').append(newTr);
+    }
+
+    $tableID.find('table').append($clone);
+});
+
+$tableID.on('click', '.table-remove', async function () {
+    let poolID = $(this).parents('tr').attr('id');
+    console.log(poolID);
+    deleteSavedTest(this, poolID);
+});
 
 $tableID.on('click', '.table-up', function () {
     const $row = $(this).parents('tr');

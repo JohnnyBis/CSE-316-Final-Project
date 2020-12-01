@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const employeeAPI = require("./employeeAPI.js");
-const patientAPI = require("./patientAPI.js");
 
 let app = express();
 app.use('/static_media', express.static('../../Media'))
@@ -83,6 +82,4 @@ app.post("/login/lab", (req, res) => {
 
 
 app.use(employeeAPI);
-app.use(patientAPI);
-
 app.listen(8080);
