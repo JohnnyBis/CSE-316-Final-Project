@@ -44,10 +44,78 @@ employeeAPI.get("/queryDB/all", (req, res) => {
 
 employeeAPI.get("/deleteTest/:barcodeID", (req, res) => {
     let id = req.params.barcodeID;
-    sqlManager.query(`DELETE FROM EmployeeTest WHERE EmployeeTest.testBarcode = '${id}';`, function(error, results, fields) {
+    let poolMapQuery = `SELECT * FROM PoolMap WHERE PoolMap.testBarcode = '${id}';`;
+    sqlManager.query(poolMapQuery, (error, results, fields) => {
+        if (results != undefined && results.length > 0) {
+            throw new Error("Can't delete test. Test barcode is already used in pool.");
+        }
+
+        let deleteTestQuery = `DELETE FROM EmployeeTest WHERE EmployeeTest.testBarcode = '${id}';`;
+        sqlManager.query(deleteTestQuery, (error, results, fields) => {
+            if (error) throw error;
+            res.send("Successfully deleted test.");
+            res.send();
+        });
+    });
+});
+
+employeeAPI.post("/addPool", (req, res) => {
+    let poolBarcode = req.body.poolBarcode;
+    let testList = req.body.testList;
+    console.log(poolBarcode);
+    console.log(testList);
+
+    if (poolBarcode && testList) {
+		sqlManager.query('INSERT INTO Pool (poolBarcode) VALUES (?);', [poolBarcode], function(error, results, fields) {
+            if (error) throw error;
+            try {
+                if (didCreatePoolMap(poolBarcode, testList)) res.end();
+            } catch (error) {
+                throw error;
+            }
+		});
+	} else {
+	    res.send('Please enter the employeeID and barcode.');
+		res.end();
+    }
+    return false;
+});
+
+function didCreatePoolMap(poolBarcode, testList) {    
+    let combinedValues = [];
+    for(let i = 0; i < testList.length; i++) {
+        combinedValues.push([testList[i], poolBarcode]);
+    }
+
+    sqlManager.query('INSERT INTO PoolMap (testBarcode, poolBarcode) VALUES ?;', [combinedValues], function(error, results, fields) {
         if (error) throw error;
-        console.log(results, fields);
-        res.send("Successfully deleted test.");
+        return true
+    });
+}
+
+employeeAPI.get("/queryDB/savedPools", (req, res) => {
+    let barcodeQuery = 'SELECT * FROM PoolMap;';
+    sqlManager.query(barcodeQuery, function(error, results, fields) {
+        if (error) throw error;
+        let poolMap = new Map();
+
+        for(let i = 0; i < results.length; i++) {
+            let poolBarcode = results[i]["poolBarcode"];
+            if (poolMap.has(poolBarcode)) {
+                poolMap.get(poolBarcode).push(results[i]["testBarcode"]);
+            }else{
+                poolMap.set(results[i]["poolBarcode"], [results[i]["testBarcode"]]);
+            }
+        }
+        res.json(Object.fromEntries(poolMap));
+    });
+});
+
+employeeAPI.get("/queryDB/deletePool/:id", (req, res) => {
+    let deletePoolQuery = `DELETE FROM PoolMap WHERE poolBarcode = ${id};`;
+    sqlManager.query(deletePoolQuery, function(error, results, fields) {
+        if (error) throw error;
+        // res.send("Succesfully deleted pool.");
         res.end();
     });
 });

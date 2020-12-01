@@ -2,8 +2,20 @@ const $tableID = $('#table');
 const $BTN = $('#export-btn');
 const $EXPORT = $('#export');
 
-function fetchSavedTests() {
-    return fetch("http://localhost:8080/queryDB/all").then(result => {
+const newTr = `
+        <tr class="hide">
+        <td class="pt-3-half">
+        </td>
+        <td class="pt-3-half">
+            <input id="testBarcode" name="testList">
+        </td>
+        <td>
+            <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
+        </td>
+        </tr>`;
+
+function fetchSavedPools() {
+    return fetch("http://localhost:8080/queryDB/savedPools").then(result => {
         return result.json();
     }).then(function (data) {
         return data;
@@ -15,27 +27,31 @@ function fetchSavedTests() {
 
 async function displaySavedTests() {
     const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
-    let fetchTestList = await fetchSavedTests();
-    if (fetchTestList == null) return;
-    
+    let savedPools = await fetchSavedPools();
+    console.log(savedPools);
+    console.log(savedPools);
+    if (savedPools == null) return;
+
     if ($tableID.find('tbody tr').length === 0) {
-        for (let i = 0; i < fetchTestList.length; i++) {
-            const newTr = `
-                <tr class="hide" id="${fetchTestList[i]["testBarcode"]}">
-                    <td class="pt-3-half">${fetchTestList[i]["employeeID"]}</td>
-                    <td class="pt-3-half">${fetchTestList[i]["testBarcode"]}</td>
-                    <td>
-                        <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
-                    </td>
-                </tr>`;
-            $('tbody').append(newTr);
+        for (var key in savedPools) {
+            if (savedPools.hasOwnProperty(key)) {
+                const newTr = `
+                    <tr class="hide" id="${key}">
+                    <td class="pt-3-half">${key}</td>
+                        <td class="pt-3-half">${savedPools[key]}</td>
+                        <td>
+                            <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
+                        </td>
+                    </tr>`;
+                $('tbody').append(newTr);
+            }
         }
     }
     $tableID.find('table').append($clone);
 }
 
 function deleteTestBy(barcodeID) {
-    return fetch(`http://localhost:8080/deleteTest/${barcodeID}`).then(result => {
+    return fetch(`http://localhost:8080/deletePool/${barcodeID}`).then(result => {
         return result;
     }).catch((error) => {
         console.log(error);
@@ -43,8 +59,8 @@ function deleteTestBy(barcodeID) {
     });
 }
 
-async function deleteSavedTest(element, barcodeID) {
-    let result = await deleteTestBy(barcodeID);
+async function deleteSavedTest(element, poolID) {
+    let result = await deleteTestBy(poolID);
     console.log(result);
     if(result == null) return;
     $(element).parents('tr').detach();
@@ -52,19 +68,30 @@ async function deleteSavedTest(element, barcodeID) {
 
 displaySavedTests();
 
-$('#form-submit').on('click', async () => {
-    displaySavedTests();
+// $('#form-submit').on('click', async () => {
+//     displaySavedTests();
+// });
+
+$('#add-button').on('click', () => {
+
+    const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
+
+    if ($tableID.find('tbody tr').length === 0) {
+        $('tbody').append(newTr);
+    }
+
+    $tableID.find('table').append($clone);
 });
 
 $tableID.on('click', '.table-remove', async function () {
-    let testID = $(this).parents('tr').attr('id');
-    console.log(testID);
-    deleteSavedTest(this, testID);
+    let poolID = $(this).parents('tr').attr('id');
+    console.log(poolID);
+    deleteSavedTest(this, poolID);
 });
 
 $tableID.on('click', '.table-up', function () {
     const $row = $(this).parents('tr');
-
+    
     if ($row.index() === 0) {
         return;
     }

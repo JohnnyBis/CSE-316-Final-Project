@@ -40,7 +40,7 @@
                     </h6>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="/static/poolMaping.html">
+                            <a class="nav-link" href="/static/poolMapping.html">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="feather feather-layers">
@@ -52,7 +52,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/static/savedPoolMaps.html">
+                            <a class="nav-link active" href="/static/savedPoolMaps.html">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="feather feather-layers">
@@ -98,32 +98,19 @@
                     <h1 class="h2">Pool Mapping</h1>
                 </div>
 
-                <!-- Information Input Form -->
+                <!-- Pool Mapping Table -->
                 <div class="col-md-8 order-md-1">
                     <form class="needs-validation" action="/addPool" method="POST">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="poolBarcode">Pool barcode</label>
-                                <input type="text" class="form-control" id="poolBarcode" placeholder="E.g. 30000" name="poolBarcode" required>
-                                <div class="invalid-feedback">
-                                    A poolBarcode is required.
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <!-- Editable Test Barcode Table -->
                         <div class="card">
                             <h4 class="card-header text-center font-weight-bold py-4">Test barcode table</h3>
                             <div class="card-body">
                               <div id="table" class="table-editable">
-                                <span class="table-add float-right mb-3 mr-2"><button type="button" id="add-button" style="background-color: white; border: none;"><img src="/static_media/plus.png" style="width: 30px; height: 30px;"></button></span>                                </span>
+                                <span class="table-add float-right mb-3 mr-2"><button type="button" id="add-button" style="background-color: white; border: none;"></button></span></span>
                                 <table class="table table-bordered table-responsive-md table-striped text-center">
                                   <thead>
                                     <tr>
-                                        <th class="text-center">Pool Barcode</th>
-                                        <th class="text-center">Barcode Number</th>
-                                        <th class="text-center">Remove</th>
+                                      <th class="text-center">Barcode Number</th>
+                                      <th class="text-center">Remove</th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -131,22 +118,15 @@
                                 </table>
                               </div>
                             </div>
-                          </div>
-                        <hr class="mb-4">
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <button class="btn btn-primary btn-lg btn-block" type="submit">Submit</button>
-                            </div>
-
                         </div>
+                        <hr class="mb-4">
+                        <button class="btn btn-primary btn-lg btn-block" type="submit">Submit Changes</button>
                     </form>
                 </div>
             </main>
         </div>
     </div>
-    
-    <script src="/static/functionalities/savedPoolTable.js"></script>
+    <!-- <script src="/static/functionalities/barcodeTable.js"></script> -->
 </body>
 
 
