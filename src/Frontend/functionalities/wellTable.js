@@ -2,20 +2,10 @@ const $tableID = $('#table');
 const $BTN = $('#export-btn');
 const $EXPORT = $('#export');
 
-const newTr = `
-        <tr class="hide">
-        <td class="pt-3-half">
-        </td>
-        <td class="pt-3-half">
-            <input id="testBarcode" name="testList">
-        </td>
-        <td>
-            <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
-        </td>
-        </tr>`;
+let inputPoolBarcode = "";
 
-function fetchSavedPools() {
-    return fetch("http://localhost:8080/queryDB/savedPools").then(result => {
+function fetchSavedWellTesting() {
+    return fetch("http://localhost:8080/queryDB/wellTesting").then(result => {
         return result.json();
     }).then(function (data) {
         return data;
@@ -25,33 +15,34 @@ function fetchSavedPools() {
     });
 }
 
-async function displaySavedTests() {
+async function displayWellTesting() {
     const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
-    let savedPools = await fetchSavedPools();
-    console.log(savedPools);
-    console.log(savedPools);
-    if (savedPools == null) return;
+    let savedWells = await fetchSavedWellTesting();
+    if (savedWells == null) return;
 
     if ($tableID.find('tbody tr').length === 0) {
-        for (var key in savedPools) {
-            if (savedPools.hasOwnProperty(key)) {
-                const newTr = `
-                    <tr class="hide" id="${key}">
-                    <td class="pt-3-half">${key}</td>
-                        <td class="pt-3-half">${savedPools[key]}</td>
+        for(let i = 0; i < savedWells.length; i++) {
+            let result = savedWells[i]["result"];
+            const newTr = `
+                    <tr class="hide" id=${savedWells[i]["wellBarcode"]}>
+                        <td class="pt-3-half"><p>${savedWells[i]["wellBarcode"]}</p>
+                        <td class="pt-3-half"><p>${savedWells[i]["poolBarcode"]}</p>
+                        <td class="pt-3-half"><p>${result}</td>
                         <td>
                             <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
                         </td>
                     </tr>`;
-                $('tbody').append(newTr);
-            }
+            $('tbody').append(newTr);
         }
     }
     $tableID.find('table').append($clone);
 }
 
-function deleteTestBy(barcodeID) {
-    return fetch(`http://localhost:8080/deletePool/${barcodeID}`).then(result => {
+
+displayWellTesting();
+
+function deleteWellBy(wellBarcode) {
+    return fetch(`http://localhost:8080/deleteWell/${wellBarcode}`).then(result => {
         return result;
     }).catch((error) => {
         console.log(error);
@@ -59,34 +50,24 @@ function deleteTestBy(barcodeID) {
     });
 }
 
-async function deleteSavedTest(element, poolID) {
-    let result = await deleteTestBy(poolID);
+async function deleteSavedWell(element, wellID) {
+    let result = await deleteWellBy(wellID);
     console.log(result);
-    if(result == null) return;
+    if(result == null || result.status >= 400) {
+        alert("Something went wrong! Try again.");
+        return;
+    }
     $(element).parents('tr').detach();
 }
 
-displaySavedTests();
-
-// $('#form-submit').on('click', async () => {
-//     displaySavedTests();
-// });
-
-$('#add-button').on('click', () => {
-
-    const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
-
-    if ($tableID.find('tbody tr').length === 0) {
-        $('tbody').append(newTr);
-    }
-
-    $tableID.find('table').append($clone);
-});
+$("#add-well-button").onclick = () => {
+    displayWellTesting();
+};
 
 $tableID.on('click', '.table-remove', async function () {
-    let poolID = $(this).parents('tr').attr('id');
-    console.log(poolID);
-    deleteSavedTest(this, poolID);
+    let wellID = $(this).parents('tr').attr('id');
+    console.log(wellID);
+    deleteSavedWell(this, wellID);
 });
 
 $tableID.on('click', '.table-up', function () {

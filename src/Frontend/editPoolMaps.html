@@ -52,7 +52,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="/static/savedPoolMaps.html">
+                            <a class="nav-link active" href="/static/editPoolMaps.html">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="feather feather-layers">
@@ -100,7 +100,7 @@
 
                 <!-- Pool Mapping Table -->
                 <div class="col-md-8 order-md-1">
-                    <form class="needs-validation" action="/addPool" method="POST">
+                    <form class="needs-validation" action="/editPool" method="POST">
                         <div class="card">
                             <h4 class="card-header text-center font-weight-bold py-4">Test barcode table</h3>
                             <div class="card-body">
@@ -109,8 +109,9 @@
                                 <table class="table table-bordered table-responsive-md table-striped text-center">
                                   <thead>
                                     <tr>
-                                      <th class="text-center">Barcode Number</th>
-                                      <th class="text-center">Remove</th>
+                                        <th class="text-center">Pool Barcode</th>
+                                        <th class="text-center">Barcode Number</th>
+                                        <th class="text-center">Remove</th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -126,7 +127,7 @@
             </main>
         </div>
     </div>
-    <!-- <script src="/static/functionalities/barcodeTable.js"></script> -->
+    <script src="/static/functionalities/editPoolTable.js"></script>
 </body>
 
 
