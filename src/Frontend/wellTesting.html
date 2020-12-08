@@ -104,7 +104,8 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="poolBarcode">Well barcode</label>
-                                <input type="text" class="form-control" name="wellBarcode" placeholder="E.g. 30000" required>
+                                <input type="text" class="form-control" name="wellBarcode" placeholder="E.g. 30000"
+                                    required>
                                 <div class="invalid-feedback">
                                     Valid first name is required.
                                 </div>
@@ -112,7 +113,8 @@
 
                             <div class="col-md-6 mb-3">
                                 <label for="poolBarcode">Pool barcode</label>
-                                <input type="text" class="form-control" name="poolBarcode" placeholder="E.g. 30000" required>
+                                <input type="text" class="form-control" name="poolBarcode" placeholder="E.g. 30000"
+                                    required>
                                 <div class="invalid-feedback">
                                     Valid first name is required.
                                 </div>
@@ -134,40 +136,40 @@
                         <br>
                         <div class="row">
                             <div class="col-md-3">
-                                <button class="btn btn-primary btn-md btn-block" type="submit" id="add-well-button">Add</button>
+                                <button class="btn btn-primary btn-md btn-block" type="submit"
+                                    id="add-well-button">Add</button>
                             </div>
                         </div>
                         <hr class="mb-4">
-                        <!-- Editable Test Barcode Table -->
-                        <div class="card">
-                            <h4 class="card-header text-center font-weight-bold py-4">Results table</h3>
-                                <div class="card-body">
-                                    <div id="table" class="table-editable">
-                                        <table
-                                            class="table table-bordered table-responsive-md table-striped text-center">
-                                            <thead>
-                                                <tr>
-                                                    <th class="text-center">Well Barcode</th>
-                                                    <th class="text-center">Pool Barcode</th>
-                                                    <th class="text-center">Result</th>
-                                                    <th class="text-center">Remove</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                        </div>
                     </form>
+                    
+                    <!-- Editable Test Barcode Table -->
+                    <div class="card">
+                        <h3 class="card-header text-center font-weight-bold py-4">Results table</h3>
+                        <div class="card-body">
+                            <div id="table" class="table-editable">
+                                <table class="table table-bordered table-responsive-md table-striped text-center">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Well Barcode</th>
+                                            <th class="text-center">Pool Barcode</th>
+                                            <th class="text-center">Result</th>
+                                            <th class="text-center">Remove</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                     <br>
-                    <button class="btn btn-primary btn-lg btn-block">Edit Well</button>
+                        <button class="btn btn-primary btn-md btn-block" type="submit" id="edit-well-button">Edit Well</button>
                     <br>
                 </div>
             </main>
         </div>
     </div>
-
     <script src="/static/functionalities/wellTable.js"></script>
 </body>
 

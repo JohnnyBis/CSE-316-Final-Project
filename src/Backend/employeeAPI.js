@@ -207,9 +207,20 @@ employeeAPI.get("/deleteWell/:wellId", (req, res) => {
         sqlManager.query(deleteWellQuery, (error, results, fields) => {
             if (error) throw error;
             res.send("Successfully deleted well.");
-            res.send();
+            res.end();
         });
     });
 });
+
+employeeAPI.get("/editWell/:wellID/:newResult", (req, res) => {
+    let wellID = req.params.wellID;
+    let result = req.params.newResult;
+    let editQuery = `UPDATE WellTesting SET result = '${result}' WHERE wellBarcode = '${wellID}';`;
+    sqlManager.query(editQuery, (error, results, fields) => {
+        if (error) throw error;
+        res.send("Successfully deleted well.");
+        res.end();
+    });
+})
 
 module.exports = employeeAPI;

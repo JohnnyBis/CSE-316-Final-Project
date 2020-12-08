@@ -27,12 +27,20 @@ async function displayWellTesting() {
                     <tr class="hide" id=${savedWells[i]["wellBarcode"]}>
                         <td class="pt-3-half"><p>${savedWells[i]["wellBarcode"]}</p>
                         <td class="pt-3-half"><p>${savedWells[i]["poolBarcode"]}</p>
-                        <td class="pt-3-half"><p>${result}</td>
+                        <td class="pt-3-half">
+                            <select class="custom-select d-block w-100" id="result-options" name="${i}-result" required>
+                                <option>In progress</option>
+                                <option>Negative</option>
+                                <option>Positive</option>
+                            </select>  
+                        </td>
                         <td>
                             <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
                         </td>
                     </tr>`;
+                    
             $('tbody').append(newTr);
+            $(`select[name="${i}-result"]`).find(`option:contains(${result})`).attr("selected",true);
         }
     }
     $tableID.find('table').append($clone);
@@ -59,6 +67,34 @@ async function deleteSavedWell(element, wellID) {
     }
     $(element).parents('tr').detach();
 }
+
+function editWellBy(wellBarcode, newResult) {
+    return fetch(`http://localhost:8080/editWell/${wellBarcode}/${newResult}`).then(result => {
+        return result;
+    }).catch((error) => {
+        console.log(error);
+        return null;
+    });
+}
+
+async function editSavedWell(wellID, newResult) {
+    let result = await editWellBy(wellID, newResult);
+    console.log(result);
+    if(result == null || result.status >= 400) {
+        alert("Something went wrong! Try again.");
+        return;
+    }
+    alert("Successfully edited wells.");
+}
+
+document.getElementById("edit-well-button").onclick = () => {
+    $('table > tbody  > tr').each(function(index, tr) { 
+        let wellBarcode = tr.cells[0].querySelector("p").innerHTML;
+        let dropdownCell = tr.cells[2].querySelector('#result-options');
+        let chosenResult = dropdownCell.options[dropdownCell.selectedIndex].text;
+        editSavedWell(wellBarcode, chosenResult);
+     });
+};
 
 $("#add-well-button").onclick = () => {
     displayWellTesting();
