@@ -2,18 +2,6 @@ const $tableID = $('#table');
 const $BTN = $('#export-btn');
 const $EXPORT = $('#export');
 
-const newTr = `
-        <tr class="hide">
-        <td class="pt-3-half">
-        </td>
-        <td class="pt-3-half">
-            <input id="testBarcode" name="testList">
-        </td>
-        <td>
-            <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
-        </td>
-        </tr>`;
-
 function fetchSavedPools() {
     return fetch("http://localhost:8080/queryDB/savedPools").then(result => {
         return result.json();
@@ -29,7 +17,6 @@ async function displaySavedTests() {
     const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
     let savedPools = await fetchSavedPools();
     console.log(savedPools);
-    console.log(savedPools);
     if (savedPools == null) return;
 
     if ($tableID.find('tbody tr').length === 0) {
@@ -37,8 +24,8 @@ async function displaySavedTests() {
             if (savedPools.hasOwnProperty(key)) {
                 const newTr = `
                     <tr class="hide" id="${key}">
-                    <td class="pt-3-half">${key}</td>
-                        <td class="pt-3-half">${savedPools[key]}</td>
+                        <td class="pt-3-half"><p name="poolBarcode">${key}</p></td>
+                        <td class="pt-3-half"><input class="edit-test" name="testBarcodeList" value=${savedPools[key]}></td>
                         <td>
                             <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
                         </td>
@@ -51,8 +38,8 @@ async function displaySavedTests() {
 }
 
 function deleteTestBy(barcodeID) {
-    return fetch(`http://localhost:8080/deletePool/${barcodeID}`).then(result => {
-        return result;
+    return fetch(`http://localhost:8080/queryDB/deletePool/${barcodeID}`).then(result => {
+        return result.json();
     }).catch((error) => {
         console.log(error);
         return null;
@@ -62,26 +49,23 @@ function deleteTestBy(barcodeID) {
 async function deleteSavedTest(element, poolID) {
     let result = await deleteTestBy(poolID);
     console.log(result);
-    if(result == null) return;
+    if(result == null || result.status >= 400) {
+        alert("Something went wrong! Try again.");
+        return;
+    }
     $(element).parents('tr').detach();
 }
 
+function editTestBarcode(poolBarcode, testBarcodeList) {
+    return fetch(`http://localhost:8080/editPool/${poolBarcode}&${testBarcodeList}`).then(result => {
+        return result;
+    }).catch((error) => {
+        console.log(error);
+        return null;
+    });
+}
+
 displaySavedTests();
-
-// $('#form-submit').on('click', async () => {
-//     displaySavedTests();
-// });
-
-$('#add-button').on('click', () => {
-
-    const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
-
-    if ($tableID.find('tbody tr').length === 0) {
-        $('tbody').append(newTr);
-    }
-
-    $tableID.find('table').append($clone);
-});
 
 $tableID.on('click', '.table-remove', async function () {
     let poolID = $(this).parents('tr').attr('id');
