@@ -12,6 +12,40 @@ const newTr = `
         </td>
         </tr>`;
 
+function fetchSavedResults(patientID) {
+    return fetch(`http://localhost:8080/patientResults/${patientID}`).then(result => {
+        return result.json();
+    }).then(function (data) {
+        return data;
+    }).catch((error) => {
+        console.log(error);
+        return null;
+    });
+}
+
+async function displaySavedResults() {
+    let queryStringID = location.search.substring(1);
+    const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
+    let savedResults = await fetchSavedResults(queryStringID);
+    console.log(savedResults);
+    if (savedResults == null) return;
+
+    if ($tableID.find('tbody tr').length === 0) {
+        for (let i = 0; i < savedResults.length; i++) {
+            const newTr = `
+                            <tr class="hide">
+                                <td class="pt-3-half"><p name="collectionTime">${savedResults[i]["testingEndTime"]}</p></td>
+                                <td class="pt-3-half"><p name="barcode">${savedResults[i]["testBarcode"]}</p></td>
+                                <td class="pt-3-half"><p name="result">${savedResults[i]["result"]}</p></td>
+                            </tr>`;
+            $('tbody').append(newTr);
+        }
+    }
+    $tableID.find('table').append($clone);
+}
+
+displaySavedResults();
+
 $('#add-button').on('click', () => {
 
     const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');

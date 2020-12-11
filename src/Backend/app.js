@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const employeeAPI = require("./employeeAPI.js");
+const { json } = require('express');
 
 let app = express();
 app.use('/static_media', express.static('../../Media'))
@@ -43,8 +44,7 @@ app.post("/login/patient", (req, res) => {
 	if (email && password) {
 		sqlManager.query('SELECT * FROM Employee WHERE email = ? AND passcode = ?', [email, password], function(error, results, fields) {
 			if (results != undefined && results.length > 0) {
-				// req.session.id = id;
-				res.redirect('../static/employeeResults.html');
+				res.redirect(`../static/employeeResults.html?${results[0].employeeID}`);
 			} else {
 				res.send('Incorrect Username and/or Password!');
 			}
@@ -78,6 +78,27 @@ app.post("/login/lab", (req, res) => {
 		res.send('Please enter Username and Password!');
 		res.end();
 	}
+});
+
+app.get("/patientResults/:id", (req, res) => {
+	const id = req.params.id;
+	let resultsQuery = `SELECT R.testBarcode, W.result, W.testingEndTime  
+	FROM (SELECT * FROM PoolMap
+		WHERE testBarcode IN (SELECT testBarcode
+			FROM EmployeeTest
+			WHERE employeeID = '${id}'
+		))R, WellTesting W
+	WHERE W.poolBarcode = R.poolBarcode;`;
+
+	sqlManager.query(resultsQuery, function(error, results, fields) {
+		if (results != undefined && results.length > 0) {
+			res.json(results);			
+		} else {
+			res.send('Could not find results. Try again.');
+		}
+		res.end();
+	});
+
 });
 
 
